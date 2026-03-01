@@ -3,10 +3,6 @@ package com.ak.aidregistry.service;
 import com.ak.aidregistry.domain.AidRequest;
 import com.ak.aidregistry.domain.AidRequestStatus;
 import com.ak.aidregistry.domain.InventoryItem;
-import com.ak.aidregistry.domain.ItemType;
-
-import java.util.Map;
-
 
 public class MatchingService {
     public boolean match(AidRequest request, InventoryItem inventory){
