@@ -8,11 +8,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class AidRegistryService {
 
-    public AidRequestResponseDto createRequest(CreateAidRequestDto dto) {
-        AidRequest request = new AidRequest(dto.getId(), dto.getItemType(), dto.getQuantity());
+//    public AidRequestResponseDto getAidRequest(String id) {
+//        AidRequest request = repository.findById(id);
+//
+//        return new AidRequestResponseDto(
+//                request.getId(),
+//                request.getItemType(),
+//                request.getQuantity(),
+//                request.getStatus()
+//        );
+//    }
+
+    public AidRequestResponseDto createAidRequest(CreateAidRequestDto dto) {
+        AidRequest aidRequest = new AidRequest(dto.getId(), dto.getItemType(), dto.getQuantity());
         //repository.save(request);
-        return new AidRequestResponseDto(request.getId(), request.getItemType(),
-                request.getQuantity(), request.getStatus()
+        return new AidRequestResponseDto(aidRequest.getId(), aidRequest.getItemType(),
+                aidRequest.getQuantity(), aidRequest.getStatus()
         );
     }
 
