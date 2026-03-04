@@ -3,8 +3,8 @@ package com.ak.aidregistry.domain;
 import io.micrometer.common.util.StringUtils;
 
 public class InventoryItem {
-    private String id;
-    private ItemType itemType;
+    private final String id;
+    private final ItemType itemType;
     private int quantityAvailable;
 
     public InventoryItem(String id, ItemType itemType, int quantityAvailable) {
@@ -17,13 +17,13 @@ public class InventoryItem {
     }
 
     public void reduceQuantity(int amount) {
-        if (amount > quantityAvailable) {
-            throw new IllegalArgumentException("Cannot reduce item quantity more than available");
-        }
         if (amount <= 0) {
             throw new IllegalArgumentException("Reduction amount must be more than 0");
         }
 
+        if (amount > quantityAvailable) {
+            throw new IllegalArgumentException("Cannot reduce item quantity more than available");
+        }
         this.quantityAvailable -= amount;
     }
 
