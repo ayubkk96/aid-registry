@@ -5,7 +5,7 @@ import com.ak.aidregistry.domain.AidRequestStatus;
 import com.ak.aidregistry.domain.InventoryItem;
 
 public class MatchingService {
-    public boolean match(AidRequest request, InventoryItem inventory){
+    public static boolean match(AidRequest request, InventoryItem inventory){
         if (inventory == null) throw new IllegalArgumentException("inventory is null");
         if (request == null) throw new IllegalArgumentException("request is null");
         if (request.getStatus() == AidRequestStatus.OPEN
