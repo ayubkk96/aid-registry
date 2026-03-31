@@ -46,7 +46,7 @@ public class MatchingRunService {
                 continue;
             }
 
-            if(MatchingService.match(request, item)); {
+            if(matchingService.match(request, item)); {
                 allocated++;
             }
         }
