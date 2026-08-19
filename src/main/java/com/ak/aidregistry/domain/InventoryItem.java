@@ -27,6 +27,14 @@ public class InventoryItem {
         this.quantityAvailable -= amount;
     }
 
+    public void increaseQuantity(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Increase amount must be greater than 0");
+        }
+
+        quantityAvailable += amount;
+    }
+
     public String getId() {
         return id;
     }
