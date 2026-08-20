@@ -7,6 +7,9 @@ import com.ak.aidregistry.dto.MatchResultDto;
 import com.ak.aidregistry.dto.UpsertInventoryDto;
 import com.ak.aidregistry.dto.response.AidRequestResponseDto;
 import com.ak.aidregistry.dto.response.InventoryRequestResponseDto;
+import com.ak.aidregistry.exceptions.AidRequestNotFoundException;
+import com.ak.aidregistry.repository.AidRequestRepository;
+import com.ak.aidregistry.repository.InventoryItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,13 +18,21 @@ import java.util.List;
 public class AidRegistryService {
 
     private final MatchingRunService matchingRunService;
+    private final AidRequestRepository aidRequestRepository;
+    private final InventoryItemRepository inventoryItemRepository;
 
-    public AidRegistryService(MatchingRunService matchingRunService) {
+    public AidRegistryService(MatchingRunService matchingRunService, AidRequestRepository aidRequestRepository, InventoryItemRepository inventoryItemRepository) {
         this.matchingRunService = matchingRunService;
+        this.aidRequestRepository = aidRequestRepository;
+        this.inventoryItemRepository = inventoryItemRepository;
     }
 
+
     public AidRequestResponseDto getAidRequest(String id) {
-        AidRequest request = repository.findById(id);
+        AidRequest request = aidRequestRepository.findById(id);
+        if (request == null) {
+            throw new AidRequestNotFoundException("AidRequest with id " + id + " not found");
+        }
         return new AidRequestResponseDto(
                 request.getId(),
                 request.getItemType(),
@@ -32,7 +43,7 @@ public class AidRegistryService {
 
     public AidRequestResponseDto createAidRequest(CreateAidRequestDto dto) {
         AidRequest aidRequest = new AidRequest(dto.getId(), dto.getItemType(), dto.getQuantity());
-        repository.save(aidRequest);
+        aidRequestRepository.save(aidRequest);
         return new AidRequestResponseDto(
                 aidRequest.getId(),
                 aidRequest.getItemType(),
@@ -42,7 +53,7 @@ public class AidRegistryService {
     }
 
     public InventoryRequestResponseDto getInventoryItem(String id) {
-        InventoryItem request = repository.findById(id);
+        InventoryItem request = inventoryItemRepository.findById(id);
         return new InventoryRequestResponseDto(
                 request.getId(),
                 request.getItemType(),
@@ -52,7 +63,7 @@ public class AidRegistryService {
 
     //Upsert means update if exists, otherwise insert (create) it
     public InventoryRequestResponseDto upsertInventory(UpsertInventoryDto dto){
-        InventoryItem existing = repository.findById(dto.getId());
+        InventoryItem existing = inventoryItemRepository.findById(dto.getId());
 
         if(existing != null) {
             existing.increaseQuantity(dto.getQuantityAvailable());
@@ -67,7 +78,7 @@ public class AidRegistryService {
                 dto.getId(),
                 dto.getItemType(),
                 dto.getQuantityAvailable());
-        repository.save(inventoryItem);
+        inventoryItemRepository.save(inventoryItem);
         return new InventoryRequestResponseDto(
                 inventoryItem.getId(),
                 inventoryItem.getItemType(),
@@ -81,8 +92,8 @@ public class AidRegistryService {
 
     }
     public MatchResultDto runMatching() {
-        List<AidRequest> requests = requestRepository.findAll();
-        List<InventoryItem> inventory = inventoryRepository.findAll();
+        List<AidRequest> requests = aidRequestRepository.findAll();
+        List<InventoryItem> inventory = inventoryItemRepository.findAll();
 
         return matchingRunService.run(requests, inventory);
     }
